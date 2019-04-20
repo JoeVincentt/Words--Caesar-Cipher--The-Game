@@ -2,15 +2,15 @@ import React, { Component } from "react";
 import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Spinner } from "native-base";
 import Modal from "react-native-modal";
-import { ButtonText } from "../components/Text";
+import { ButtonText } from "./Text";
 
-export default class LoadingModal extends Component {
+export default class HowtoplayModal extends Component {
   render() {
     return (
       <View>
         <Modal
-          isVisible={this.props.loading}
-          backdropColor={"#01579b"}
+          isVisible={this.props.open}
+          backdropColor={"#212121"}
           backdropOpacity={0.95}
           animationIn="zoomInDown"
           animationOut="zoomOutUp"
@@ -20,8 +20,16 @@ export default class LoadingModal extends Component {
           backdropTransitionOutTiming={600}
         >
           <View style={styles.modalBox}>
-            <ButtonText> Just a moment... </ButtonText>
-            <Spinner color="#ffff00" />
+            <TouchableOpacity onPress={this.props.closeModal}>
+              <Image
+                source={require("../assets/images/cross.png")}
+                style={{
+                  height: 40,
+                  width: 60,
+                  overflow: "visible"
+                }}
+              />
+            </TouchableOpacity>
           </View>
         </Modal>
       </View>

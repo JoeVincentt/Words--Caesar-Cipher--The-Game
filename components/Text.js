@@ -13,17 +13,17 @@ export const MainText = props => (
 const styles = StyleSheet.create({
   buttonText: {
     fontFamily: "bangers",
-    fontSize: width * 0.07,
-    shadowColor: "gray",
-    shadowOpacity: 0.4,
+    fontSize: height * 0.03,
+    shadowColor: "black",
+    shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 1
   },
   mainText: {
     fontFamily: "Fredoka_One",
-    fontSize: width * 0.07,
-    shadowColor: "gray",
-    shadowOpacity: 0.4,
+    fontSize: height * 0.03,
+    shadowColor: "black",
+    shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 1
   }

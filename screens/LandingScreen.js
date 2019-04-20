@@ -1,8 +1,15 @@
 import React, { Component } from "react";
 
 import StyledView from "../components/StyledView";
-import { Container, Button } from "native-base";
-import { View, StyleSheet, Image, ImageBackground } from "react-native";
+import { Spinner } from "native-base";
+import {
+  View,
+  StyleSheet,
+  Image,
+  ImageBackground,
+  Platform,
+  TouchableOpacity
+} from "react-native";
 import { BounceButton } from "../components/Buttons";
 import { GameConsumer } from "../context/GameContext";
 import { MainText, ButtonText } from "../components/Text";
@@ -14,10 +21,19 @@ import {
   _originalWordMap
 } from "../components/renderGameFunc";
 import { AbsShift } from "../components/AbsShift";
-
-import { _caesarCipher } from "../crypto";
+import { Stats } from "../components/Stats";
+import { _caesarCipher } from "../utils/crypto";
+import HowToPlayModal from "../components/HowtoplayModal";
+import { soundPlay } from "../utils/soundPlay";
+import { _showToast } from "../utils/ShowToast";
 const words = require("an-array-of-english-words");
-// const words = ["hello", "eco", "quest"];
+
+//Save and retrieve data from local storage
+const saveDataToSecureStorage = async (key, item) =>
+  await Expo.SecureStore.setItemAsync(key, JSON.stringify(item));
+
+const retrieveDataFromSecureStorage = async key =>
+  await Expo.SecureStore.getItemAsync(key);
 
 export default class GameScreen extends Component {
   state = {
@@ -28,23 +44,48 @@ export default class GameScreen extends Component {
     cryptedWordToMap: [],
     wordMap: [],
     indexToCheck: 0,
-    prevWordIndex: []
+    prevWordIndex: [],
+    tries: 3,
+    lvl: 1,
+    score: 0,
+    howToPlayModal: true,
+    loadingWord: false,
+    hints: 2
   };
 
   componentDidMount() {
     this.loadSipher();
   }
+  async componentWillMount() {
+    let lvl = await retrieveDataFromSecureStorage("CaesarCipherGameLvl");
+    if (lvl !== null) {
+      lvl = Number(JSON.parse(lvl));
+      this.setState({ lvl });
+    }
+    let score = await retrieveDataFromSecureStorage("CaesarCipherGameScore");
+    if (score !== null) {
+      score = Number(JSON.parse(score));
+      this.setState({ score });
+    }
+  }
+
+  closeModal = () => {
+    soundPlay(require("../assets/sounds/click.wav"));
+    this.setState({ howToPlayModal: false });
+  };
 
   randomNumberInRange = (maximum, minimum) => {
     return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
   };
 
   loadSipher = async () => {
+    this.setState({ loadingWord: true });
     const caesarShift = this.randomNumberInRange(1, 26);
     let pickedWord = words[this.randomNumberInRange(0, 274918)];
     if (pickedWord.length >= 10) {
       return this.loadSipher();
     }
+
     const cryptedWord = _caesarCipher(pickedWord, caesarShift);
     const cryptedWordToMap = cryptedWord.split("");
     const wordMap = pickedWord.split("");
@@ -56,29 +97,56 @@ export default class GameScreen extends Component {
       cryptedWord,
       pickedWordToMap,
       cryptedWordToMap,
-      wordMap
+      wordMap,
+      loadingWord: false,
+      indexToCheck: 0,
+      tries: 3
     });
-    console.log(
-      this.state.caesarShift,
-      this.state.pickedWord,
-      this.state.cryptedWord,
-      this.state.pickedWordToMap,
-      this.state.cryptedWordToMap,
-      this.state.wordMap
-    );
+    console.log(this.state.pickedWord);
   };
 
   checkLetter = async letter => {
     if (this.state.wordMap[this.state.indexToCheck] === letter) {
-      console.log("succes");
+      soundPlay(require("../assets/sounds/success.wav"));
       await this.setState({ indexToCheck: this.state.indexToCheck + 1 });
     } else {
-      console.log("wrong");
+      soundPlay(require("../assets/sounds/wrong.wav"));
+      await this.setState({ tries: this.state.tries - 1 });
+      if (this.state.tries < 0) {
+        soundPlay(require("../assets/sounds/wrong.wav"));
+        _showToast(" try another one ", 2000, "danger", "red");
+        this.loadSipher();
+      }
     }
     if (this.state.wordMap.length === this.state.indexToCheck) {
-      console.log("endGame");
+      soundPlay(require("../assets/sounds/success.wav"));
+      _showToast(" Good Job! ", 2000, "success", "green");
       setTimeout(async () => {
-        await this.setState({ indexToCheck: 0 });
+        await this.setState({ score: this.state.score + 1 });
+        saveDataToSecureStorage("CaesarCipherGameScore", this.state.score);
+        if (this.state.score === 10) {
+          await this.setState({ lvl: this.state.lvl + 1, score: 0 });
+          saveDataToSecureStorage("CaesarCipherGameLvl", this.state.lvl);
+          saveDataToSecureStorage("CaesarCipherGameScore", this.state.score);
+        }
+        this.loadSipher();
+      }, 800);
+    }
+  };
+
+  getHint = async () => {
+    if (this.state.hints === 0) {
+      soundPlay(require("../assets/sounds/wrong.wav"));
+      return _showToast(" no hints left ", 1500, "warning", "orange");
+    }
+    soundPlay(require("../assets/sounds/hint.wav"));
+    await this.setState({
+      indexToCheck: this.state.indexToCheck + 1,
+      hints: this.state.hints - 1
+    });
+    if (this.state.wordMap.length === this.state.indexToCheck) {
+      _showToast(" Good Job! ", 2000, "success", "green");
+      setTimeout(async () => {
         this.loadSipher();
       }, 800);
     }
@@ -90,7 +158,12 @@ export default class GameScreen extends Component {
       indexToCheck,
       cryptedWordToMap,
       pickedWordToMap,
-      caesarShift
+      caesarShift,
+      score,
+      lvl,
+      tries,
+      howToPlayModal,
+      loadingWord
     } = this.state;
     return (
       <StyledView>
@@ -108,24 +181,7 @@ export default class GameScreen extends Component {
                 style={styles.imageBackgroundStyle}
               >
                 <AbsShift caesarShift={caesarShift} />
-                <View
-                  style={{
-                    margin: width * 0.05,
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    width: width * 0.9
-                  }}
-                >
-                  <View>
-                    <ButtonText> Score: 5/10 </ButtonText>
-                  </View>
-                  <View>
-                    <ButtonText> lvl 1 </ButtonText>
-                  </View>
-                  <View>
-                    <ButtonText> 10 life </ButtonText>
-                  </View>
-                </View>
+                <Stats lvl={lvl} tries={tries} score={score} />
                 <View
                   style={{
                     flex: 1,
@@ -133,23 +189,40 @@ export default class GameScreen extends Component {
                     alignItems: "center"
                   }}
                 >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      borderBottomColor: "#fbc02d",
-                      borderBottomWidth: 3
-                    }}
-                  >
-                    {_originalWordMap(wordMap, indexToCheck)}
-                  </View>
-                  <View style={{ flexDirection: "row" }}>
-                    {_cryptedWordMap(cryptedWordToMap)}
-                  </View>
+                  {loadingWord ? (
+                    <View style={styles.questionBox}>
+                      <Spinner />
+                    </View>
+                  ) : (
+                    <View style={styles.questionBox}>
+                      <View style={styles.originalWordBox}>
+                        {_originalWordMap(wordMap, indexToCheck)}
+                      </View>
+                      <View style={styles.cryptedWordBox}>
+                        {_cryptedWordMap(cryptedWordToMap)}
+                      </View>
+                    </View>
+                  )}
+
                   <View style={styles.pickedWordMap}>
                     {_pickedWordMap(pickedWordToMap, this.checkLetter)}
                   </View>
                 </View>
+                <TouchableOpacity onPress={() => this.getHint()}>
+                  <Image
+                    source={require("../assets/images/idea.png")}
+                    style={{
+                      width: 100,
+                      height: 167,
+                      marginBottom: height * 0.08
+                    }}
+                  />
+                </TouchableOpacity>
               </ImageBackground>
+              <HowToPlayModal
+                open={howToPlayModal}
+                closeModal={this.closeModal}
+              />
             </View>
           )}
         </GameConsumer>
@@ -183,6 +256,22 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "center",
     alignItems: "center",
-    width: width * 0.8
+    width: width * 0.9
+  },
+
+  originalWordBox: {
+    flexDirection: "row",
+    marginTop: height * 0.02
+  },
+  cryptedWordBox: {
+    flexDirection: "row",
+    marginBottom: height * 0.05,
+    borderTopColor: "#fbc02d",
+    borderTopWidth: 3
+  },
+  questionBox: {
+    height: height * 0.2,
+    justifyContent: "center",
+    alignItems: "center"
   }
 });

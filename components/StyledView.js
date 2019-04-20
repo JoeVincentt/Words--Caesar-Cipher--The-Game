@@ -7,7 +7,7 @@ export default class StyledView extends Component {
     return (
       <Container>
         <LinearGradient
-          colors={["#388e3c", "#43a047", "#4caf50", "#43a047", "#388e3c"]}
+          colors={["#212121", "#000000", "#212121", "#000000", "#212121"]}
           style={{
             flex: 1,
             padding: 0

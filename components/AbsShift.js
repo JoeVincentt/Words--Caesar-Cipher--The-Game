@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { View, StyleSheet, Image, ImageBackground } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  ImageBackground,
+  Platform
+} from "react-native";
 import { MainText, ButtonText } from "../components/Text";
 import { height, width } from "../constants/Layout";
 
@@ -9,7 +15,7 @@ export const AbsShift = ({ caesarShift }) => (
     <MainText
       style={[
         styles.shiftTextStyle,
-        { fontSize: 50, marginBottom: height * 0.01 }
+        { fontSize: height * 0.04, marginBottom: height * 0.01 }
       ]}
     >
       {caesarShift}
@@ -34,8 +40,8 @@ const styles = StyleSheet.create({
   },
   alphabetImageStyle: {
     marginBottom: height * 0.01,
-    width: width * 0.8,
-    height: height * 0.05,
+    width: 300,
+    height: 41,
     shadowColor: "black",
     shadowRadius: 4,
     shadowOpacity: 0.4

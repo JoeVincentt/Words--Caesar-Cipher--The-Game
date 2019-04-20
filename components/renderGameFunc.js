@@ -42,7 +42,15 @@ export const _cryptedWordMap = cryptedWordToMap => {
           { justifyContent: "center", alignItems: "center" }
         ]}
       >
-        <MainText style={{ fontSize: height * 0.06 }}>{letter}</MainText>
+        <MainText
+          style={{
+            fontSize: height * 0.06,
+            color: "#fb8c00",
+            marginHorizontal: width * 0.01
+          }}
+        >
+          {letter}
+        </MainText>
       </View>
     ));
   }
@@ -69,7 +77,13 @@ export const _originalWordMap = (wordMap, indexToCheck) => {
             {letter}
           </MainText>
         ) : (
-          <MainText style={{ fontSize: height * 0.06, color: "#ffff00" }}>
+          <MainText
+            style={{
+              fontSize: height * 0.06,
+              color: "#ffff00",
+              marginHorizontal: width * 0.01
+            }}
+          >
             ?
           </MainText>
         )}

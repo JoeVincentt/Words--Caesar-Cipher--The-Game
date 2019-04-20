@@ -37,12 +37,13 @@ export default class App extends React.Component {
     return Promise.all([
       Asset.loadAsync([
         require("./assets/sounds/click.wav"),
-        require("./assets/sounds/ticking.wav"),
         require("./assets/sounds/hint.wav"),
         require("./assets/sounds/success.wav"),
         require("./assets/sounds/wrong.wav"),
         require("./assets/images/alphabet.png"),
-        require("./assets/images/laurel.png")
+        require("./assets/images/laurel.png"),
+        require("./assets/images/idea.png"),
+        require("./assets/images/cross.png")
       ]),
       Font.loadAsync({
         // This is the font that we are using for our tab bar
