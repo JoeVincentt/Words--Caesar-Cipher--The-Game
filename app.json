@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Facts, True or False, Test, Quiz",
-    "slug": "Facts_True_or_False_Test_Quiz",
+    "name": "Words, Caesar Cipher: The Game",
+    "slug": "WordsCaesarCipher",
     "privacy": "public",
     "sdkVersion": "32.0.0",
     "platforms": [
@@ -13,17 +13,24 @@
     "icon": "./assets/images/icon.png",
     "splash": {
       "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "cover",
+      "backgroundColor": "#000000"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 30000,
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
-    }
+      "supportsTablet": true,
+      "bundleIdentifier": "com.jvmastery.wordscaesaercipher"
+    },
+    "android": {
+      "package": "com.jvmastery.wordscaesaercipher"
+    },
+    "description": "The Caesar cipher is one of the earliest known and simplest ciphers. It is a type of substitution cipher in which each letter in the plaintext is 'shifted' a certain number of places down the alphabet.\n To solve cryptogram use  Caesar cipher with the given \"shifted\"  value."
   }
 }

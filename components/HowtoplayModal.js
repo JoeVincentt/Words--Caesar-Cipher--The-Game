@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Spinner } from "native-base";
 import Modal from "react-native-modal";
-import { ButtonText } from "./Text";
+import { ButtonText, MainText } from "./Text";
+import { height, width } from "../constants/Layout";
 
 export default class HowtoplayModal extends Component {
   render() {
@@ -14,12 +15,28 @@ export default class HowtoplayModal extends Component {
           backdropOpacity={0.95}
           animationIn="zoomInDown"
           animationOut="zoomOutUp"
-          animationInTiming={600}
-          animationOutTiming={600}
-          backdropTransitionInTiming={600}
-          backdropTransitionOutTiming={600}
+          animationInTiming={1000}
+          animationOutTiming={1000}
+          backdropTransitionInTiming={1000}
+          backdropTransitionOutTiming={1000}
         >
           <View style={styles.modalBox}>
+            <MainText style={{ color: "#ffff00" }}>
+              {" "}
+              To solve cryptogram use{" "}
+            </MainText>
+            <MainText style={{ color: "#ffff00" }}>
+              {" "}
+              Caesar cipher with{" "}
+            </MainText>
+            <MainText style={{ color: "#ffff00" }}>
+              {" "}
+              the given "shifted"{" "}
+            </MainText>
+            <MainText style={{ color: "#ffff00", marginBottom: height * 0.02 }}>
+              {" "}
+              value.{" "}
+            </MainText>
             <TouchableOpacity onPress={this.props.closeModal}>
               <Image
                 source={require("../assets/images/cross.png")}

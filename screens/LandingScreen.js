@@ -100,21 +100,24 @@ export default class GameScreen extends Component {
       wordMap,
       loadingWord: false,
       indexToCheck: 0,
-      tries: 3
+      tries: 3,
+      hints: 2
     });
-    console.log(this.state.pickedWord);
+    // console.log(this.state.pickedWord);
   };
 
   checkLetter = async letter => {
     if (this.state.wordMap[this.state.indexToCheck] === letter) {
       soundPlay(require("../assets/sounds/success.wav"));
+      _showToast(" Great! ", 800, "success", "green");
       await this.setState({ indexToCheck: this.state.indexToCheck + 1 });
     } else {
       soundPlay(require("../assets/sounds/wrong.wav"));
+      _showToast(" please Try again! ", 800, "success", "red");
       await this.setState({ tries: this.state.tries - 1 });
       if (this.state.tries < 0) {
         soundPlay(require("../assets/sounds/wrong.wav"));
-        _showToast(" try another one ", 2000, "danger", "red");
+        _showToast(" please try another word ", 2000, "danger", "red");
         this.loadSipher();
       }
     }
