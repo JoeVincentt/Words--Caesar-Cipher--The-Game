@@ -21,22 +21,12 @@ export default class HowtoplayModal extends Component {
           backdropTransitionOutTiming={1000}
         >
           <View style={styles.modalBox}>
-            <MainText style={{ color: "#ffff00" }}>
+            <MainText style={{ color: "#ffff00", marginBottom: height * 0.05 }}>
               {" "}
-              To solve cryptogram use{" "}
-            </MainText>
-            <MainText style={{ color: "#ffff00" }}>
-              {" "}
-              Caesar cipher with{" "}
-            </MainText>
-            <MainText style={{ color: "#ffff00" }}>
-              {" "}
-              the given "shifted"{" "}
-            </MainText>
-            <MainText style={{ color: "#ffff00", marginBottom: height * 0.02 }}>
-              {" "}
+              To solve cryptogram use Caesar cipher with the given "shifted"
               value.{" "}
             </MainText>
+
             <TouchableOpacity onPress={this.props.closeModal}>
               <Image
                 source={require("../assets/images/cross.png")}
