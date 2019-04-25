@@ -24,7 +24,7 @@ export default class HowtoplayModal extends Component {
             <MainText style={{ color: "#ffff00", marginBottom: height * 0.05 }}>
               {" "}
               To solve cryptogram use Caesar cipher with the given "shifted"
-              value.{" "}
+              value. If shift is 1, then A = Z and so on.{" "}
             </MainText>
 
             <TouchableOpacity onPress={this.props.closeModal}>

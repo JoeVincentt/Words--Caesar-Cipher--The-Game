@@ -26,6 +26,7 @@ import { _caesarCipher } from "../utils/crypto";
 import HowToPlayModal from "../components/HowtoplayModal";
 import { soundPlay } from "../utils/soundPlay";
 import { _showToast } from "../utils/ShowToast";
+import AdmobBanner from "../utils/showAdmobBanner";
 const words = require("an-array-of-english-words");
 
 //Save and retrieve data from local storage
@@ -74,13 +75,22 @@ export default class GameScreen extends Component {
     this.setState({ howToPlayModal: false });
   };
 
+  returnMaxNumber = lvl => {
+    if (lvl <= 26) {
+      return Number(lvl);
+    } else {
+      return 26;
+    }
+  };
+
   randomNumberInRange = (maximum, minimum) => {
     return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
   };
 
   loadSipher = async () => {
     this.setState({ loadingWord: true });
-    const caesarShift = this.randomNumberInRange(1, 26);
+    const maxNumber = await this.returnMaxNumber(this.state.lvl);
+    const caesarShift = await this.randomNumberInRange(1, maxNumber);
     let pickedWord = words[this.randomNumberInRange(0, 274918)];
     if (pickedWord.length >= 10) {
       return this.loadSipher();
@@ -138,15 +148,15 @@ export default class GameScreen extends Component {
   };
 
   getHint = async () => {
-    if (this.state.hints === 0) {
-      soundPlay(require("../assets/sounds/wrong.wav"));
-      return _showToast(" no hints left ", 1500, "warning", "orange");
-    }
     soundPlay(require("../assets/sounds/hint.wav"));
     await this.setState({
       indexToCheck: this.state.indexToCheck + 1,
       hints: this.state.hints - 1
     });
+    if (this.state.hints === 0) {
+      soundPlay(require("../assets/sounds/wrong.wav"));
+      return _showToast(" no more hints left ", 1500, "warning", "orange");
+    }
     if (this.state.wordMap.length === this.state.indexToCheck) {
       _showToast(" Good Job! ", 2000, "success", "green");
       setTimeout(async () => {
@@ -165,6 +175,7 @@ export default class GameScreen extends Component {
       score,
       lvl,
       tries,
+      hints,
       howToPlayModal,
       loadingWord
     } = this.state;
@@ -211,16 +222,23 @@ export default class GameScreen extends Component {
                     {_pickedWordMap(pickedWordToMap, this.checkLetter)}
                   </View>
                 </View>
-                <TouchableOpacity onPress={() => this.getHint()}>
-                  <Image
-                    source={require("../assets/images/idea.png")}
-                    style={{
-                      width: 100,
-                      height: 167,
-                      marginBottom: height * 0.08
-                    }}
-                  />
-                </TouchableOpacity>
+                {hints !== 0 ? (
+                  <TouchableOpacity onPress={() => this.getHint()}>
+                    <Image
+                      source={require("../assets/images/idea.png")}
+                      style={{
+                        width: 100,
+                        height: 167,
+                        marginBottom: height * 0.08
+                      }}
+                    />
+                  </TouchableOpacity>
+                ) : (
+                  <>
+                    <AdmobBanner />
+                    <View style={{ marginBottom: height * 0.08 }} />
+                  </>
+                )}
               </ImageBackground>
               <HowToPlayModal
                 open={howToPlayModal}

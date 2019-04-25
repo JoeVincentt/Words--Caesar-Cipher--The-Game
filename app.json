@@ -26,10 +26,12 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.jvmastery.wordscaesaercipher"
+      "bundleIdentifier": "com.jvmastery.wordscaesaercipher",
+      "appStoreUrl": "https://itunes.apple.com/us/app/words-caesar-cipher-the-game/id1460508807"
     },
     "android": {
-      "package": "com.jvmastery.wordscaesaercipher"
+      "package": "com.jvmastery.wordscaesaercipher",
+      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.jvmastery.wordscaesaercipher"
     },
     "description": "The Caesar cipher is one of the earliest known and simplest ciphers. It is a type of substitution cipher in which each letter in the plaintext is 'shifted' a certain number of places down the alphabet.\n To solve cryptogram use  Caesar cipher with the given \"shifted\"  value."
   }
