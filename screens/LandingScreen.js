@@ -92,6 +92,7 @@ export default class GameScreen extends Component {
     const maxNumber = await this.returnMaxNumber(this.state.lvl);
     const caesarShift = await this.randomNumberInRange(1, maxNumber);
     let pickedWord = words[this.randomNumberInRange(0, 274918)];
+    console.log(pickedWord);
     if (pickedWord.length >= 10) {
       return this.loadSipher();
     }
@@ -137,7 +138,7 @@ export default class GameScreen extends Component {
       setTimeout(async () => {
         await this.setState({ score: this.state.score + 1 });
         saveDataToSecureStorage("CaesarCipherGameScore", this.state.score);
-        if (this.state.score === 10) {
+        if (this.state.score === 5) {
           await this.setState({ lvl: this.state.lvl + 1, score: 0 });
           saveDataToSecureStorage("CaesarCipherGameLvl", this.state.lvl);
           saveDataToSecureStorage("CaesarCipherGameScore", this.state.score);
@@ -153,15 +154,22 @@ export default class GameScreen extends Component {
       indexToCheck: this.state.indexToCheck + 1,
       hints: this.state.hints - 1
     });
-    if (this.state.hints === 0) {
-      soundPlay(require("../assets/sounds/wrong.wav"));
-      return _showToast(" no more hints left ", 1500, "warning", "orange");
-    }
     if (this.state.wordMap.length === this.state.indexToCheck) {
       _showToast(" Good Job! ", 2000, "success", "green");
-      setTimeout(async () => {
+      return setTimeout(async () => {
+        await this.setState({ score: this.state.score + 1 });
+        saveDataToSecureStorage("CaesarCipherGameScore", this.state.score);
+        if (this.state.score === 5) {
+          await this.setState({ lvl: this.state.lvl + 1, score: 0 });
+          saveDataToSecureStorage("CaesarCipherGameLvl", this.state.lvl);
+          saveDataToSecureStorage("CaesarCipherGameScore", this.state.score);
+        }
         this.loadSipher();
       }, 800);
+    }
+    if (this.state.hints === 0) {
+      soundPlay(require("../assets/sounds/wrong.wav"));
+      _showToast(" no more hints left ", 1500, "warning", "orange");
     }
   };
 

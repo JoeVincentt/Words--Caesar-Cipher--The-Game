@@ -21,7 +21,7 @@ export const Stats = ({ score, lvl, tries }) => (
     }}
   >
     <View>
-      <ButtonText style={{ color: "#fbc02d" }}> Score: {score}/10 </ButtonText>
+      <ButtonText style={{ color: "#fbc02d" }}> Score: {score}/5 </ButtonText>
     </View>
     <View>
       <ButtonText style={{ color: "#fbc02d" }}> lvl {lvl} </ButtonText>
